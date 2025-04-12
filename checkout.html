@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - BioGold</title>
+  <link rel="shortcut icon" href="./assets/images/logo/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/gold-theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .checkout-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .payment-methods {
+      margin-top: 20px;
+    }
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .payment-method:hover {
+      background: #f9f9f9;
+    }
+    .payment-method input[type="radio"] {
+      margin: 0;
+    }
+    .order-summary {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 4px;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .order-item-details {
+      flex: 1;
+    }
+    .order-item-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .order-item-price {
+      color: var(--salmon-pink);
+    }
+    .order-item-quantity {
+      margin: 0 15px;
+    }
+    .delete-item-btn {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      padding: 5px;
+      font-size: 18px;
+    }
+    .delete-item-btn:hover {
+      color: #cc0000;
+    }
+    .place-order-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--salmon-pink);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .error {
+      color: #ff4444;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    /* Mobile-specific navigation */
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .mobile-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #777;
+      text-decoration: none;
+      font-size: 0.7rem;
+    }
+
+    .mobile-nav a.active {
+      color: var(--salmon-pink);
+    }
+
+    .mobile-nav ion-icon {
+      font-size: 1.3rem;
+      margin-bottom: 3px;
+    }
+
+    .mobile-nav-badge {
+      position: absolute;
+      top: 0;
+      right: 28%;
+      background: var(--salmon-pink);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media screen and (min-width: 768px) {
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    /* Add space at the bottom on mobile for the navigation bar */
+    @media screen and (max-width: 767px) {
+      body {
+        padding-bottom: 65px;
+      }
+    }
+
+    /* RTL Support for Arabic */
+    html[lang="ar"] .checkout-grid {
+      direction: rtl;
+    }
+    
+    html[lang="ar"] .form-group label,
+    html[lang="ar"] .payment-method span,
+    html[lang="ar"] .order-item-title,
+    html[lang="ar"] .order-total h3,
+    html[lang="ar"] .order-total p {
+      text-align: right;
+    }
+    
+    html[lang="ar"] .payment-method {
+      flex-direction: row-reverse;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" data-overlay></div>
+
+  <!-- HEADER -->
+  <div id="header-container"></div>
+
+  <main>
+    <div class="checkout-container">
+      <h1 data-translate="checkout">Checkout</h1>
+      <div class="checkout-grid">
+        <div class="checkout-form">
+          <h2 data-translate="shippingInfo">Shipping Information</h2>
+          <form id="checkout-form" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+              <label for="fullName" data-translate="fullName">Full Name</label>
+              <input type="text" id="fullName" required data-translate-placeholder="enterFullName">
+            </div>
+            <div class="form-group">
+              <label for="email" data-translate="email">Email</label>
+              <input type="email" id="email" required data-translate-placeholder="enterEmail">
+            </div>
+            <div class="form-group">
+              <label for="phone" data-translate="phone">Phone</label>
+              <input type="tel" id="phone" required data-translate-placeholder="enterPhone">
+            </div>
+            <div class="form-group">
+              <label for="address" data-translate="address">Address</label>
+              <input type="text" id="address" required data-translate-placeholder="enterAddress">
+            </div>
+            <div class="form-group">
+              <label for="city" data-translate="city">City</label>
+              <input type="text" id="city" required data-translate-placeholder="enterCity">
+            </div>
+            <div class="form-group">
+              <label for="country" data-translate="country">Country</label>
+              <select id="country" required>
+                <option value="" data-translate="selectCountry">Select a country</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+                <option value="GB">United Kingdom</option>
+                <option value="FR">France</option>
+                <option value="DE">Germany</option>
+                <option value="TN">Tunisia</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="EG">Egypt</option>
+                <option value="MA">Morocco</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="zipCode" data-translate="zipCode">ZIP Code</label>
+              <input type="text" id="zipCode" required data-translate-placeholder="enterZipCode">
+            </div>
+
+            <h2 data-translate="paymentMethod">Payment Method</h2>
+            <div class="payment-methods">
+              <label class="payment-method">
+                <input type="radio" name="payment" value="credit" required>
+                <span data-translate="creditCard">Credit Card</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="debit" required>
+                <span data-translate="debitCard">Debit Card</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="paypal" required>
+                <span data-translate="paypal">PayPal</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="cod" required>
+                <span data-translate="cashOnDelivery">Cash On Delivery</span>
+              </label>
+            </div>
+
+            <button type="submit" class="place-order-btn" data-translate="placeOrder">Place Order</button>
+          </form>
+        </div>
+
+        <div class="order-summary">
+          <h2 data-translate="orderSummary">Order Summary</h2>
+          <div id="order-items">
+            <!-- Order items will be loaded here -->
+          </div>
+          <div class="order-total">
+            <h3 data-translate="total">Total</h3>
+            <p><span data-translate="items">Items</span>: <span id="total-items">0</span></p>
+            <p><span data-translate="subtotal">Subtotal</span>: <span id="subtotal">0.00</span> <span class="currency">TND</span></p>
+            <p><span data-translate="shipping">Shipping</span>: <span id="shipping">5.00</span> <span class="currency">TND</span></p>
+            <h3><span data-translate="total">Total</span>: <span id="total">0.00</span> <span class="currency">TND</span></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <div id="footer-container"></div>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="mobile-nav">
+    <a href="index.html">
+      <ion-icon name="home-outline"></ion-icon>
+      <span data-translate="home">Home</span>
+    </a>
+    <a href="index.html#products">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span data-translate="products">Shop</span>
+    </a>
+    <a href="wishlist.html">
+      <ion-icon name="heart-outline"></ion-icon>
+      <span data-translate="wishlist">Wishlist</span>
+      <span class="mobile-nav-badge wishlist-count">0</span>
+    </a>
+    <a href="cart.html">
+      <ion-icon name="bag-outline"></ion-icon>
+      <span data-translate="shoppingCart">Cart</span>
+      <span class="mobile-nav-badge cart-count">0</span>
+    </a>
+  </div>
+
+  <!-- Load components -->
+  <script src="./components.js"></script>
+
+  <script>
+    // Load header and footer
+    document.getElementById('header-container').innerHTML = loadHeader();
+    document.getElementById('footer-container').innerHTML = loadFooter();
+
+    // Function to fix cart data to ensure consistency
+    function fixCartData() {
+      try {
+        console.log('Fixing cart data...');
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Fix each item in the cart
+        const fixedCart = cart.map(item => {
+          // Create a new object with fixed properties
+          return {
+            productId: item.productId || item._id || item.id || 'unknown-' + Date.now(),
+            name: item.name || item.title || 'Unknown Product',
+            price: parseFloat(item.price) || 0,
+            quantity: parseInt(item.quantity) || 1,
+            image: item.image || './assets/images/products/default.jpg'
+          };
+        });
+        
+        // Save the fixed cart
+        localStorage.setItem('cart', JSON.stringify(fixedCart));
+        console.log('Cart data fixed and saved:', fixedCart);
+        return fixedCart;
+      } catch (error) {
+        console.error('Error fixing cart data:', error);
+        return [];
+      }
+    }
+
+    // Initialize components after DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        // Fix cart data first before loading checkout
+        fixCartData();
+        
+        // Initialize components if the function exists
+        if (typeof initializeComponents === 'function') {
+          initializeComponents();
+        }
+
+        // Load order summary
+        loadOrderSummary();
+        
+        // Update cart and wishlist counts
+        updateCounts();
+        
+        // Apply translations
+        if (typeof translatePage === 'function') {
+          translatePage();
+        }
+        
+        // Set direction based on language
+        const currentLang = localStorage.getItem('language') || 'en';
+        if (currentLang === 'ar') {
+          document.documentElement.dir = 'rtl';
+          document.body.classList.add('rtl');
+        } else {
+          document.documentElement.dir = 'ltr';
+          document.body.classList.remove('rtl');
+        }
+      } catch (error) {
+        console.error('Error initializing checkout page:', error);
+        alert('There was an error loading the checkout page. Redirecting to cart.');
+        window.location.href = 'cart.html';
+      }
+    });
+
+    // Update cart and wishlist counts
+    function updateCounts() {
+      // Update cart count
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 1), 0);
+      const cartCountElements = document.querySelectorAll('.cart-count');
+      cartCountElements.forEach(element => {
+        element.textContent = totalItems;
+        element.style.display = totalItems > 0 ? 'flex' : 'none';
+      });
+      
+      // Update wishlist count
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+      wishlistCountElements.forEach(element => {
+        element.textContent = wishlist.length;
+        element.style.display = wishlist.length > 0 ? 'flex' : 'none';
+      });
+    }
+
+    // Load order summary from cart
+    function loadOrderSummary() {
+      try {
+        const orderItemsContainer = document.getElementById('order-items');
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log('Loading order summary with cart items:', JSON.stringify(cartItems, null, 2));
+        
+        if (cartItems.length === 0) {
+          window.location.href = 'cart.html';
+          return;
+        }
+        
+        // Fix cart data if needed
+        const fixedCartItems = cartItems.map(item => {
+          // Ensure item has all required properties with proper types
+          return {
+            ...item,
+            productId: item.productId || item._id || item.id || 'unknown',
+            name: item.name || item.title || 'Unknown Product',
+            price: parseFloat(item.price) || 0,
+            quantity: parseInt(item.quantity) || 1
+          };
+        });
+        
+        // Save fixed cart data
+        localStorage.setItem('cart', JSON.stringify(fixedCartItems));
+        
+        // Generate HTML for each item
+        let itemsHtml = '';
+        let subtotal = 0;
+        
+        fixedCartItems.forEach(item => {
+          const itemPrice = parseFloat(item.price) || 0;
+          const itemQuantity = parseInt(item.quantity) || 1;
+          const itemTotal = itemPrice * itemQuantity;
+          
+          console.log(`Summary item: ${item.name} - Price: ${itemPrice}, Quantity: ${itemQuantity}, Total: ${itemTotal}`);
+          
+          subtotal += itemTotal;
+          
+          itemsHtml += `
+            <div class="order-item">
+              <div class="order-item-details">
+                <h4>${item.name}</h4>
+                <p>${itemQuantity} × ${itemPrice.toFixed(2)} TND</p>
+              </div>
+              <div class="order-item-price">${itemTotal.toFixed(2)} TND</div>
+            </div>
+          `;
+        });
+        
+        // Format subtotal to 2 decimal places and convert back to number for consistency
+        subtotal = Math.round(subtotal * 100) / 100;
+        console.log('Order summary subtotal:', subtotal);
+        
+        // Fixed shipping cost
+        const shipping = 5.00;
+        
+        // Calculate total as number with 2 decimal precision
+        const total = Math.round((subtotal + shipping) * 100) / 100;
+        console.log('Order summary total:', total);
+        
+        // Update the order items container
+        orderItemsContainer.innerHTML = itemsHtml;
+        
+        // Update summary values
+        document.getElementById('total-items').textContent = fixedCartItems.reduce((sum, item) => sum + (parseInt(item.quantity) || 1), 0);
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('shipping').textContent = shipping.toFixed(2);
+        document.getElementById('total').textContent = total.toFixed(2);
+        
+        // Translate if needed
+        if (typeof translatePage === 'function') {
+          translatePage();
+        }
+      } catch (error) {
+        console.error('Error loading order summary:', error);
+        alert('There was an error loading your order summary. Please try again.');
+      }
+    }
+
+    // Handle form submission
+    async function handleSubmit(event) {
+      try {
+        event.preventDefault();
+        console.log('Processing checkout submission...');
+        
+        // Show loading state
+        const submitButton = document.querySelector('.place-order-btn');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Processing...';
+        submitButton.disabled = true;
+        
+        // Get form data with validation
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const country = document.getElementById('country').value;
+        const postal = document.getElementById('zipCode').value.trim();
+        
+        // Validate required fields
+        if (!name || !email || !phone || !address || !city || !country || !postal) {
+          const currentLang = localStorage.getItem('language') || 'en';
+          const message = currentLang === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields';
+          alert(message);
+          submitButton.textContent = originalButtonText;
+          submitButton.disabled = false;
+          return;
+        }
+        
+        // Get selected payment method
+        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+        
+        if (!paymentMethod) {
+          const currentLang = localStorage.getItem('language') || 'en';
+          const message = currentLang === 'ar' ? 'الرجاء اختيار طريقة الدفع' : 'Please select a payment method';
+          alert(message);
+          submitButton.textContent = originalButtonText;
+          submitButton.disabled = false;
+          return;
+        }
+        
+        // Get cart items and calculate total
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        if (cartItems.length === 0) {
+          const currentLang = localStorage.getItem('language') || 'en';
+          const message = currentLang === 'ar' ? 'سلة التسوق فارغة' : 'Your cart is empty';
+          alert(message);
+          window.location.href = 'cart.html';
+          return;
+        }
+        
+        // Process items with precise calculations
+        const items = cartItems.map(item => {
+          // Convert price to number, ensure it's a valid number with exact 2 decimal places
+          const productPrice = Math.round(parseFloat(item.price) * 100) / 100;
+          // Convert quantity to integer
+          const itemQuantity = parseInt(item.quantity) || 1;
+          
+          // Log each item's details for debugging
+          console.log(`Order item: ${item.name} - Price: ${productPrice}, Quantity: ${itemQuantity}`);
+          
+          return {
+            productId: item.productId || item._id || item.id || 'unknown',
+            name: item.name || item.title || 'Unknown Product',
+            price: productPrice,
+            quantity: itemQuantity
+          };
+        });
+        
+        console.log('Processed items:', JSON.stringify(items, null, 2));
+        
+        // Fixed shipping cost
+        const shipping = 5.00;
+        
+        // Calculate subtotal using exact math to avoid floating point issues
+        let subtotal = 0;
+        items.forEach(item => {
+          // Calculate each item total and round to 2 decimal places to avoid floating point errors
+          const itemTotal = Math.round((item.price * item.quantity) * 100) / 100;
+          console.log(`Item calculation: ${item.name} - ${item.price} × ${item.quantity} = ${itemTotal}`);
+          subtotal += itemTotal;
+        });
+        
+        // Round subtotal to exactly 2 decimal places
+        subtotal = Math.round(subtotal * 100) / 100;
+        console.log('Calculated subtotal:', subtotal);
+        
+        // Calculate total with exact 2 decimal precision
+        const total = Math.round((subtotal + shipping) * 100) / 100;
+        console.log('Final total (with shipping):', total);
+        
+        // Create order object matching backend model
+        const orderData = {
+          name,
+          email,
+          phone,
+          address,
+          city,
+          country,
+          postal,
+          paymentMethod,
+          items,
+          total
+        };
+        
+        console.log('Sending order to server:', JSON.stringify(orderData, null, 2));
+        
+        // Send order to the server
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+        try {
+          const response = await fetch('http://localhost:5000/api/orders', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId); // Clear the timeout if the request completes
+          
+          // Debugging response data even if there's an error
+          let responseData;
+          const responseText = await response.text();
+          console.log('Raw server response:', responseText);
+          
+          try {
+            responseData = JSON.parse(responseText);
+            console.log('Parsed server response:', responseData);
+          } catch (e) {
+            console.error('Failed to parse server response as JSON:', e);
+            responseData = { error: 'Invalid server response format' };
+          }
+          
+          if (!response.ok) {
+            let errorMessage = 'Error processing order';
+            
+            if (responseData && responseData.error) {
+              errorMessage = responseData.error;
+              console.error('Server error:', errorMessage);
+              
+              // Special handling for common errors
+              if (errorMessage.includes('total does not match')) {
+                errorMessage = 'Order total calculation error. Please try clearing your cart and adding items again.';
+                localStorage.setItem('cart', JSON.stringify([]));
+              } else if (errorMessage.includes('TypeError')) {
+                errorMessage = 'Server error processing order. This has been reported to our team.';
+                console.error('Server TypeError:', errorMessage);
+              }
+            }
+            
+            throw new Error(errorMessage);
+          }
+          
+          // Clear cart
+          localStorage.setItem('cart', JSON.stringify([]));
+          
+          // Update counts
+          updateCounts();
+          
+          // Show confirmation and redirect
+          const currentLang = localStorage.getItem('language') || 'en';
+          const successMessage = currentLang === 'ar' ? 'تم وضع طلبك بنجاح!' : 'Your order has been placed successfully!';
+          alert(successMessage);
+          window.location.href = 'index.html';
+        } catch (error) {
+          console.error('Error processing order:', error);
+          
+          // Get the button and restore its state
+          const submitButton = document.querySelector('.place-order-btn');
+          if (submitButton) {
+            submitButton.textContent = submitButton.getAttribute('data-translate') || 'Place Order';
+            submitButton.disabled = false;
+          }
+          
+          // Provide more specific error messages
+          let errorMessage = 'There was an error processing your order. Please try again.';
+          
+          // Check for common errors
+          if (error.name === 'AbortError') {
+            errorMessage = 'Request timed out. The server took too long to respond.';
+          } else if (error.message && error.message.includes('ECONNREFUSED')) {
+            errorMessage = 'Could not connect to the server. Please check if the server is running.';
+          } else if (error.message && (error.message.includes('items') || error.message.includes('total'))) {
+            errorMessage = 'There was an issue with your cart items. Please try clearing your cart and adding items again.';
+          }
+          
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error processing order:', error);
+        
+        // Get the button and restore its state
+        const submitButton = document.querySelector('.place-order-btn');
+        if (submitButton) {
+          submitButton.textContent = submitButton.getAttribute('data-translate') || 'Place Order';
+          submitButton.disabled = false;
+        }
+        
+        // Provide more specific error messages
+        let errorMessage = 'There was an error processing your order. Please try again.';
+        
+        // Check for common network errors
+        if (error.message && error.message.includes('ECONNREFUSED') || error.message.includes('ENOTFOUND')) {
+          errorMessage = 'Could not connect to the server. Please check your internet connection.';
+        } else if (error.message && error.message.includes('ETIMEDOUT')) {
+          errorMessage = 'The server took too long to respond. Please try again later.';
+        }
+        
+        alert(errorMessage);
+      }
+    }
+  </script>
+
+  <!-- ionicon link -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

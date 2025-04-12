@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - BioGold</title>
+  <link rel="shortcut icon" href="./assets/images/logo/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/gold-theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+      text-align: center;
+      padding-top: 1.5rem;
+    }
+    
+    /* Cart Styles */
+    .cart-container {
+      padding: 2rem 0;
+      min-height: 60vh;
+    }
+    
+    .cart-items {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+    
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-image {
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+      border-radius: 5px;
+      margin-right: 1.5rem;
+    }
+    
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .item-details {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    
+    .item-price {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .quantity-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    .quantity-input {
+      width: 40px;
+      height: 30px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 0 0.5rem;
+    }
+    
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff5252;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .remove-item:hover {
+      color: #ff0000;
+    }
+    
+    .item-total {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-right: 3rem;
+    }
+    
+    /* Cart Summary Styles */
+    .cart-summary {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
+    }
+    
+    .summary-title {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    
+    .total-row {
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 2rem;
+    }
+    
+    .checkout-btn:hover {
+      background-color: #3a5a40;
+    }
+    
+    /* Empty Cart Styles */
+    .empty-cart-message {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .empty-cart-image {
+      width: 150px;
+      margin-bottom: 2rem;
+    }
+    
+    .empty-cart-message h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-cart-message p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #45a049;
+    }
+    
+    .secondary-btn {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      padding: 12px 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+    
+    .secondary-btn:hover {
+      background-color: #5a6268;
+    }
+    
+    .danger-btn {
+      background: #ff5252;
+      color: white;
+    }
+    
+    .danger-btn:hover {
+      background: #ff0000;
+    }
+    
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+      transition: opacity 0.3s;
+    }
+    
+    .toast.hide {
+      opacity: 0;
+    }
+    
+    .toast.info {
+      background: rgba(0, 0, 0, 0.8);
+    }
+    
+    .toast.success {
+      background: rgba(76, 175, 80, 0.9);
+    }
+    
+    .toast.error {
+      background: rgba(255, 82, 82, 0.9);
+    }
+    
+    .toast.warning {
+      background: rgba(255, 193, 7, 0.9);
+      color: #333;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* Cart Action Buttons */
+    .cart-action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    
+    .cart-action-buttons .btn {
+      display: flex;
+      align-items: center;
+    }
+    
+    .cart-action-buttons .btn ion-icon {
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 3rem;
+      }
+      
+      .item-image {
+        margin-bottom: 1rem;
+        margin-right: 0;
+      }
+      
+      .item-total {
+        position: absolute;
+        bottom: 1rem;
+        left: 0;
+      }
+      
+      .remove-item {
+        top: auto;
+        bottom: 1rem;
+        transform: none;
+      }
+      
+      .cart-action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+    
+    /* For small mobile devices */
+    @media (max-width: 480px) {
+      .cart-items, .cart-summary, .empty-cart-message {
+        padding: 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Mobile Navigation Styles */
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .mobile-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #777;
+      text-decoration: none;
+      font-size: 0.7rem;
+    }
+
+    .mobile-nav a.active {
+      color: var(--salmon-pink);
+    }
+
+    .mobile-nav ion-icon {
+      font-size: 1.3rem;
+      margin-bottom: 3px;
+    }
+
+    .mobile-nav-badge {
+      position: absolute;
+      top: 0;
+      right: 28%;
+      background: var(--salmon-pink);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media screen and (min-width: 768px) {
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    /* Add space at the bottom on mobile for the navigation bar */
+    @media screen and (max-width: 767px) {
+      body {
+        padding-bottom: 65px;
+      }
+    }
+
+    .fix-cart-note {
+      font-size: 14px;
+      color: #6c757d;
+      margin-top: 10px;
+      text-align: center;
+    }
+    
+    .summary-total {
+      font-weight: bold;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" data-overlay></div>
+
+  <!-- Header will be loaded here -->
+  <div id="header-container"></div>
+
+  <main>
+    <div class="cart-container">
+      <div class="container">
+        <h2 class="section-title">Your Shopping Cart</h2>
+        
+        <div id="empty-cart-message" class="empty-cart-message" style="display: none;">
+          <img src="./assets/images/empty-cart.svg" alt="Empty Cart" class="empty-cart-image">
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added any products to your cart yet.</p>
+          <a href="index.html" class="btn">Continue Shopping</a>
+        </div>
+
+        <div class="cart-action-buttons">
+          <button class="btn secondary-btn" onclick="window.location.href='index.html'">
+            <ion-icon name="arrow-back-outline"></ion-icon> Continue Shopping
+          </button>
+          <button class="btn danger-btn" id="fix-cart-btn" onclick="fixCartData()">
+            <ion-icon name="build-outline"></ion-icon> Fix Cart Data
+          </button>
+        </div>
+
+        <div id="cart-items" class="cart-items">
+          <!-- Cart items will be loaded here -->
+        </div>
+          
+        <div class="cart-summary" id="cart-summary">
+          <h3>Order Summary</h3>
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="subtotal-value">0 TND</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax (10%):</span>
+            <span id="tax-value">0 TND</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span id="shipping-value">0 TND</span>
+          </div>
+          <div class="summary-total">
+            <span>Total:</span>
+            <span id="total-value">0 TND</span>
+          </div>
+          <button id="checkout-btn" class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
+          <button id="fix-cart-btn" class="secondary-btn" onclick="fixCartData()">Fix Cart Data</button>
+          <p class="fix-cart-note">If images or names aren't displaying correctly, click "Fix Cart Data"</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer will be loaded here -->
+  <div id="footer-container"></div>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="mobile-nav">
+    <a href="index.html">
+      <ion-icon name="home-outline"></ion-icon>
+      <span>Home</span>
+    </a>
+    <a href="index.html#products">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span>Shop</span>
+    </a>
+    <a href="wishlist.html">
+      <ion-icon name="heart-outline"></ion-icon>
+      <span>Wishlist</span>
+      <span class="mobile-nav-badge wishlist-count">0</span>
+    </a>
+    <a href="cart.html" class="active">
+      <ion-icon name="bag-outline"></ion-icon>
+      <span>Cart</span>
+      <span class="mobile-nav-badge cart-count">0</span>
+    </a>
+  </div>
+
+  <!-- Load components first -->
+  <script src="./components.js"></script>
+  
+  <!-- ionicon link -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <script>
+    console.log('Components loaded:', typeof loadHeader === 'function', typeof loadFooter === 'function');
+    
+    // Try to load header and footer with error handling
+    try {
+      // Create direct string versions of header and footer if functions are missing
+      if (typeof loadHeader !== 'function') {
+        console.error('loadHeader function not found - using default header');
+        document.getElementById('header-container').innerHTML = `
+          <header>
+            <div class="header-main">
+              <div class="container">
+                <a href="index.html" class="header-logo">
+                  <img src="./assets/images/logo/logo.svg" alt="BioGold's logo" width="120" height="36">
+                </a>
+                <div class="header-user-actions">
+                  <a href="cart.html" class="action-btn">
+                    <ion-icon name="bag-handle-outline"></ion-icon>
+                    <span class="count cart-count">0</span>
+                  </a>
+                </div>
+              </div>
+          </div>
+          </header>
+        `;
+      } else {
+        document.getElementById('header-container').innerHTML = loadHeader();
+      }
+      
+      if (typeof loadFooter !== 'function') {
+        console.error('loadFooter function not found - using default footer');
+        document.getElementById('footer-container').innerHTML = `
+          <footer>
+            <div class="footer-bottom">
+              <div class="container">
+                <p class="copyright">
+                  &copy; 2024 <a href="#">BioGold</a>. All Rights Reserved
+                </p>
+          </div>
+            </div>
+          </footer>
+        `;
+      } else {
+        document.getElementById('footer-container').innerHTML = loadFooter();
+      }
+      
+      console.log('Header and footer loaded successfully');
+    } catch (error) {
+      console.error('Error loading header/footer:', error);
+    }
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+      try {
+        // Remove any existing toasts
+        const existingToasts = document.querySelectorAll('.toast');
+        existingToasts.forEach(toast => toast.remove());
+        
+        // Create new toast
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        
+        // Add toast to body
+        document.body.appendChild(toast);
+        
+        // Automatically remove after delay
+        setTimeout(() => {
+          toast.classList.add('hide');
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      } catch (error) {
+        console.error('Error showing toast:', error);
+      }
+    }
+
+    // Function to fix any issues with cart data
+    function fixCartData() {
+      try {
+        console.log('Fixing cart data...');
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let hasChanges = false;
+        
+        // Check and fix each cart item
+        const fixedCart = cart.map(item => {
+          let fixed = {...item};
+          let didFix = false;
+          
+          // Fix quantity issues
+          if (!fixed.quantity || isNaN(parseInt(fixed.quantity))) {
+            fixed.quantity = 1;
+            didFix = true;
+            console.log(`Fixed quantity for item: ${fixed.productId}`);
+          }
+          
+          // Ensure price is a number
+          if (!fixed.price || isNaN(parseFloat(fixed.price))) {
+            fixed.price = 0;
+            didFix = true;
+            console.log(`Fixed price for item: ${fixed.productId}`);
+          }
+          
+          // Fix image path issues
+          if (!fixed.image) {
+            fixed.image = './assets/images/products/default.jpg';
+            didFix = true;
+            console.log(`Fixed missing image for item: ${fixed.productId}`);
+          } else if (!fixed.image.startsWith('http') && !fixed.image.startsWith('./')) {
+            fixed.image = `http://localhost:5000/${fixed.image}`;
+            didFix = true;
+            console.log(`Fixed image path for item: ${fixed.productId}, new path: ${fixed.image}`);
+          }
+          
+          // Fix name issues
+          if (!fixed.name || fixed.name === 'Product Name Not Available') {
+            fixed.name = fixed.title || 'Unknown Product';
+            didFix = true;
+            console.log(`Fixed name for item: ${fixed.productId}, using: ${fixed.name}`);
+          }
+          
+          if (didFix) hasChanges = true;
+          return fixed;
+        });
+        
+        // Save fixed cart data if changes were made
+        if (hasChanges) {
+          console.log('Saving fixed cart data:', fixedCart);
+          localStorage.setItem('cart', JSON.stringify(fixedCart));
+        } else {
+          console.log('No fixes needed for cart data');
+        }
+      } catch (error) {
+        console.error('Error fixing cart data:', error);
+      }
+    }
+
+    // Initialize components after DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        if (typeof initializeComponents === 'function') {
+          initializeComponents();
+        }
+        loadCart();
+      } catch (error) {
+        console.error('Error during initialization:', error);
+        showToast('Something went wrong. Please try refreshing the page.');
+      }
+    });
+
+    // Load cart items and update UI
+    function loadCart() {
+      try {
+        console.log('Loading cart...');
+        // Fix cart data before loading - this ensures images and names are correct
+        fixCartData();
+        
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log('Cart data:', cart);
+        
+        // Get the correct elements
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartSummarySection = document.getElementById('cart-summary');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        
+        // Debug element detection
+        console.log('Cart elements found:', {
+          cartItems: cartItemsContainer !== null,
+          cartSummary: cartSummarySection !== null,
+          emptyMessage: emptyCartMessage !== null
+        });
+        
+        // Handle empty cart
+        if (!cart || cart.length === 0) {
+          console.log('Cart is empty');
+          
+          if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = '';
+            cartItemsContainer.style.display = 'none';
+          }
+          
+          if (cartSummarySection) {
+            cartSummarySection.style.display = 'none';
+          }
+          
+          if (emptyCartMessage) {
+            emptyCartMessage.style.display = 'flex';
+          }
+          
+          return;
+        }
+
+        // We have items, show the cart and hide empty message
+        if (cartItemsContainer) {
+          cartItemsContainer.style.display = 'block';
+        }
+        
+        if (cartSummarySection) {
+          cartSummarySection.style.display = 'block';
+        }
+        
+        if (emptyCartMessage) {
+          emptyCartMessage.style.display = 'none';
+        }
+
+        let cartHTML = '';
+        let subtotal = 0;
+
+        cart.forEach(item => {
+          // Ensure consistent product ID
+          const productId = item.productId || item._id || item.id;
+          if (!productId) {
+            console.error('Item missing product ID:', item);
+            return;
+          }
+
+          // Format image path if needed
+          let imagePath = item.image || './assets/images/products/default.jpg';
+          if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('./')) {
+            imagePath = `http://localhost:5000/${imagePath}`;
+          }
+
+          const itemPrice = parseFloat(item.price) || 0;
+          const itemQuantity = parseInt(item.quantity) || 1;
+          const itemTotal = itemPrice * itemQuantity;
+          subtotal += itemTotal;
+
+          cartHTML += `
+            <div class="cart-item" data-product-id="${productId}">
+              <div class="item-image">
+                <img src="${imagePath}" alt="${item.name || 'Product'}" onerror="this.src='./assets/images/products/default.jpg'">
+              </div>
+              <div class="item-details">
+                <h3 class="item-name">${item.name || item.title || 'Unknown Product'}</h3>
+                <div class="item-price">$${itemPrice.toFixed(2)}</div>
+                <div class="quantity-controls">
+                  <button onclick="updateQuantity('${productId}', 'decrease')" class="quantity-btn">-</button>
+                  <input type="number" value="${itemQuantity}" min="1" 
+                    onchange="updateQuantity('${productId}', 'set', this.value)" 
+                    class="quantity-input">
+                  <button onclick="updateQuantity('${productId}', 'increase')" class="quantity-btn">+</button>
+                </div>
+                <div class="item-total">Total: $${itemTotal.toFixed(2)}</div>
+                <button onclick="removeFromCart('${productId}')" class="remove-btn">Remove</button>
+              </div>
+            </div>
+          `;
+        });
+
+        if (cartItemsContainer) {
+          cartItemsContainer.innerHTML = cartHTML;
+          console.log('Cart HTML generated and inserted');
+        } else {
+          console.error('Cart items container not found after checking');
+        }
+
+        // Update cart summary with correct element IDs
+        const tax = subtotal * 0.1; // 10% tax
+        const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
+        const total = subtotal + tax + shipping;
+
+        const subtotalEl = document.getElementById('subtotal-value');
+        const taxEl = document.getElementById('tax-value');
+        const shippingEl = document.getElementById('shipping-value');
+        const totalEl = document.getElementById('total-value');
+
+        if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        if (taxEl) taxEl.textContent = `$${tax.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+        // Update badge counts
+        updateMobileNavCounts();
+
+      } catch (error) {
+        console.error('Error loading cart:', error, error.stack);
+        showToast('Error loading cart. Please refresh the page.');
+      }
+    }
+
+    function updateQuantity(productId, action, value) {
+      try {
+        if (!productId) {
+          console.error('No product ID provided for quantity update');
+          showToast('Error updating quantity');
+          return;
+        }
+        
+        console.log(`Updating quantity for product ID: ${productId}, Action: ${action}, Value: ${value}`);
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Find item using both possible ID properties
+        const item = cart.find(item => 
+          item.productId === productId || 
+          item._id === productId || 
+          item.id === productId
+        );
+        
+        if (!item) {
+          console.error(`Product with ID ${productId} not found in cart`);
+          showToast('Error: Product not found in cart');
+          return;
+        }
+        
+        // Ensure quantity is a number
+        let currentQty = parseInt(item.quantity) || 1;
+        
+        // Update quantity based on action
+        if (action === 'increase') {
+          currentQty += 1;
+        } else if (action === 'decrease') {
+          currentQty = Math.max(currentQty - 1, 1); // Minimum quantity is 1
+        } else if (action === 'set' && value) {
+          currentQty = Math.max(parseInt(value) || 1, 1); // Set to specific value, minimum 1
+        }
+        
+        // Update item quantity in cart
+        item.quantity = currentQty;
+        
+        // Ensure item has consistent ID property
+        item.productId = item.productId || item._id || item.id;
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        console.log(`Updated quantity for ${item.name} to ${currentQty}`);
+        
+        // Reload cart to update UI
+        loadCart();
+        
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        showToast('Error updating quantity. Please try again.');
+      }
+    }
+
+    function updateQuantityInput(productId, value) {
+      const newQuantity = Math.max(1, parseInt(value) || 1);
+      updateQuantity(productId, 'set', newQuantity);
+    }
+
+    function removeFromCart(productId) {
+      try {
+        console.log(`Removing item with product ID: ${productId}`);
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log('Cart before removal:', cart);
+        
+        const index = cart.findIndex(item => item.productId === productId);
+        console.log(`Item index: ${index}`);
+        
+        if (index !== -1) {
+          const removedItem = cart[index];
+          console.log('Removing item:', removedItem);
+          
+          cart.splice(index, 1);
+          localStorage.setItem('cart', JSON.stringify(cart));
+          console.log('Cart after removal:', cart);
+          
+          // Reload cart and update UI
+          loadCart();
+          if (typeof updateCartCount === 'function') {
+            updateCartCount();
+          }
+          
+          // Update mobile navigation counts
+          if (typeof updateMobileNavCounts === 'function') {
+            updateMobileNavCounts();
+          }
+          
+          showToast('Item removed from cart');
+        } else {
+          console.error(`Product with ID ${productId} not found in cart`);
+          showToast('Error: Product not found in cart');
+        }
+      } catch (error) {
+        console.error('Error removing item from cart:', error);
+        showToast('Error removing item. Please try again.');
+      }
+    }
+
+    function goToCheckout() {
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart.length === 0) {
+          showToast('Your cart is empty');
+          return;
+        }
+      window.location.href = 'checkout.html';
+      } catch (error) {
+        console.error('Error proceeding to checkout:', error);
+        showToast('Error proceeding to checkout. Please try again.');
+      }
+    }
+    
+    // Update mobile navigation badge counts
+    function updateMobileNavCounts() {
+      // Update cart count
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 1), 0);
+      const cartCountElements = document.querySelectorAll('.cart-count');
+      cartCountElements.forEach(element => {
+        element.textContent = totalItems;
+        element.style.display = totalItems > 0 ? 'flex' : 'none';
+      });
+      
+      // Update wishlist count
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+      wishlistCountElements.forEach(element => {
+        element.textContent = wishlist.length;
+        element.style.display = wishlist.length > 0 ? 'flex' : 'none';
+      });
+    }
+    
+    // Call when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      updateMobileNavCounts();
+    });
+  </script>
+</body>
+</html> 

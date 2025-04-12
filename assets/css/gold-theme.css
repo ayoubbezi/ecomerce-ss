@@ -1,0 +1,156 @@
+/**
+ * Gold Theme for BioGold eCommerce Website
+ * This file overrides the default color scheme with a gold theme
+ */
+
+:root {
+  /* Define gold theme colors */
+  --gold-primary: #D4AF37;
+  --gold-secondary: #FFD700;
+  --gold-light: #FFF2CC;
+  --gold-dark: #996515;
+  --gold-hover: #B8860B;
+  --gold-gradient: linear-gradient(135deg, #D4AF37, #FFD700);
+  
+  /* Override default color variables */
+  --salmon-pink: var(--gold-primary);
+  --eerie-black: #222222;
+  --sonic-silver: #787878;
+}
+
+/* Button Styles */
+.btn,
+button[type="submit"],
+.add-cart-btn,
+.banner-btn,
+.submit-btn,
+.quantity-btn:hover,
+.remove-btn:hover,
+.newsletter-btn,
+.checkout-btn {
+  background-color: var(--gold-primary) !important;
+  color: #333 !important;
+  transition: all 0.3s ease;
+}
+
+.btn:hover,
+button[type="submit"]:hover,
+.add-cart-btn:hover,
+.banner-btn:hover,
+.submit-btn:hover,
+.checkout-btn:hover,
+.newsletter-btn:hover {
+  background-color: var(--gold-dark) !important;
+  color: #fff !important;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Count and Badge Styles */
+.count,
+.badge,
+.banner-subtitle {
+  background-color: var(--gold-primary) !important;
+  color: #333 !important;
+}
+
+/* Interactive Element Hover States */
+a:hover,
+.product-title:hover,
+.showcase-title:hover,
+.nav-title:hover,
+.dropdown-item a:hover,
+.dropdown-item a.active,
+.footer-link:hover ion-icon,
+.contact-icon,
+.price,
+.showcase-category {
+  color: var(--gold-primary) !important;
+}
+
+/* Form Focus States */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Notifications */
+.toast {
+  background: var(--gold-primary) !important;
+  color: #333 !important;
+}
+
+/* Footer and Contact Elements */
+.footer-title:after,
+.contact-info-icon,
+.nav-link-animation:before,
+.section-title:after {
+  background-color: var(--gold-primary) !important;
+}
+
+.footer-social-link:hover,
+.contact-social-link:hover {
+  background-color: var(--gold-primary) !important;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Pricing and Product Info */
+.price,
+.banner-text,
+.showcase-category {
+  color: var(--gold-primary) !important;
+}
+
+/* Header Elements */
+.header-alert-news b,
+.header-top .social-link:hover {
+  color: var(--gold-primary) !important;
+}
+
+/* Remove gold effect from header icons */
+.search-btn:hover {
+  color: var(--eerie-black) !important;
+}
+
+.action-btn:hover ion-icon {
+  color: inherit !important;
+}
+
+.social-link:hover,
+.action-btn:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Special Elements */
+.banner-btn,
+.product-grid-title,
+.copyright-link {
+  color: var(--gold-primary) !important;
+}
+
+/* Contact Cards */
+.contact-info-item:hover {
+  border-color: var(--gold-primary) !important;
+}
+
+.contact-item {
+  border-left: 3px solid var(--gold-primary);
+}
+
+/* Product Card Enhancements */
+.product-card:hover {
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2) !important;
+}
+
+.showcase:hover .add-cart-btn {
+  background-color: var(--gold-primary) !important;
+}
+
+/* Custom Gold Gradient for Special Elements */
+.banner {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                    linear-gradient(45deg, var(--gold-light), #ffffff) !important;
+} 

@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - BioGold</title>
+  <link rel="shortcut icon" href="./assets/images/logo/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/gold-theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Basic reset and variables */
+    :root {
+      --primary-color: #D4AF37;
+      --accent-color: #996515;
+      --text-color: #333;
+      --light-bg: #f9f9f9;
+      --border-color: #eee;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      background-color: var(--light-bg);
+      line-height: 1.6;
+    }
+
+    /* Error message styling */
+    .error-message {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin: 40px auto;
+      max-width: 600px;
+    }
+    
+    .error-message h2 {
+      color: #ff5252;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    
+    .error-message p {
+      color: #666;
+      margin-bottom: 24px;
+    }
+    
+    .go-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+    
+    .go-back-btn:hover {
+      background-color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+    
+    .go-back-btn ion-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: toastFadeIn 0.3s forwards, toastFadeOut 0.3s forwards 1.7s;
+    }
+    
+    @keyframes toastFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes toastFadeOut {
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+    
+    .toast ion-icon {
+      font-size: 1.5rem;
+    }
+    
+    .toast.success {
+      background-color: #4caf50;
+    }
+    
+    .toast.error {
+      background-color: #f44336;
+    }
+    
+    /* Container styles */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Product Details Styles */
+    .product-details-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      position: relative;
+    }
+    
+    .product-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+      margin-top: 30px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .product-details:hover {
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .product-image-container {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+    }
+    
+    .product-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    
+    .product-image:hover {
+      transform: scale(1.08);
+    }
+    
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+    }
+    
+    .product-title {
+      font-size: 2.2rem;
+      color: var(--eerie-black);
+      margin-bottom: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    
+    .product-category {
+      color: var(--salmon-pink);
+      font-size: 1rem;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: inline-block;
+      background: rgba(255, 99, 71, 0.1);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    
+    .product-price {
+      font-size: 2rem;
+      color: var(--eerie-black);
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+    
+    .product-description {
+      color: var(--sonic-silver);
+      line-height: 1.8;
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+    }
+    
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 8px 15px;
+      width: fit-content;
+    }
+    
+    .quantity-btn {
+      background: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .quantity-btn:hover {
+      background: var(--salmon-pink);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .quantity-input {
+      width: 60px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--eerie-black);
+    }
+    
+    .product-action-buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    
+    .add-to-cart-btn {
+      background: var(--salmon-pink);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(255, 99, 71, 0.3);
+      flex: 3;
+      margin-top: 10px;
+    }
+    
+    .add-to-wishlist-btn {
+      background: white;
+      color: var(--eerie-black);
+      border: 2px solid var(--salmon-pink);
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      margin-top: 10px;
+    }
+    
+    .add-to-cart-btn:hover {
+      background: var(--eerie-black);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .add-to-wishlist-btn:hover {
+      background: var(--salmon-pink);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(255, 99, 71, 0.2);
+    }
+    
+    .add-to-cart-btn ion-icon,
+    .add-to-wishlist-btn ion-icon {
+      font-size: 1.3rem;
+    }
+    
+    .back-to-shop {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      top: 0;
+      left: 20px;
+      padding: 10px 20px;
+      background: white;
+      color: var(--eerie-black);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border: 1px solid #eee;
+      z-index: 5;
+    }
+    
+    .back-to-shop ion-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .back-to-shop:hover {
+      background: var(--eerie-black);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-to-shop:hover ion-icon {
+      transform: translateX(-3px);
+    }
+
+    /* Responsive design */
+    @media (max-width: 992px) {
+      .product-details {
+        gap: 30px;
+        padding: 30px;
+      }
+      
+      .product-image-container {
+        height: 350px;
+      }
+      
+      .product-title {
+        font-size: 1.8rem;
+      }
+      
+      .product-price {
+        font-size: 1.7rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .product-details-container {
+        margin: 60px auto 40px;
+      }
+      
+      .back-to-shop {
+        top: -45px;
+        left: 20px;
+      }
+      
+      .product-details {
+        grid-template-columns: 1fr;
+        padding: 25px;
+      }
+      
+      .product-image-container {
+        margin-bottom: 10px;
+        height: 300px;
+      }
+      
+      .product-info {
+        padding: 0;
+      }
+      
+      .product-title {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+      }
+      
+      .product-category {
+        margin-bottom: 10px;
+      }
+      
+      .product-price {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+      
+      .product-description {
+        margin-bottom: 20px;
+        font-size: 1rem;
+      }
+      
+      .quantity-selector {
+        margin-bottom: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .product-details-container {
+        padding: 0 15px;
+        margin-top: 70px;
+      }
+      
+      .product-details {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      
+      .product-image-container {
+        height: 250px;
+      }
+      
+      .back-to-shop {
+        left: 50%;
+        transform: translateX(-50%);
+        top: -45px;
+      }
+      
+      .back-to-shop:hover {
+        transform: translateX(-50%) translateY(-2px);
+      }
+    }
+
+    /* Add category dropdown styles */
+    .menu-category {
+      position: relative;
+    }
+    
+    .dropdown-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 200px;
+      padding: 20px 0;
+      border-radius: 0 0 6px 6px;
+      background: var(--white);
+      box-shadow: 0 3px 5px hsla(0, 0%, 0%, 0.1);
+      z-index: 200;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s ease, opacity 0.3s ease;
+      border: 1px solid var(--cultured);
+    }
+    
+    .menu-category:hover .dropdown-list {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .dropdown-item a {
+      padding: 10px 25px;
+      color: var(--sonic-silver);
+      font-size: 0.9rem;
+      font-weight: 400;
+      text-transform: capitalize;
+      display: block;
+      transition: all 0.3s ease;
+    }
+    
+    .dropdown-item a:hover {
+      color: var(--salmon-pink);
+      background: var(--cultured);
+      padding-left: 30px;
+    }
+    
+    /* Desktop navigation fixes */
+    .desktop-navigation-menu {
+      z-index: 100;
+    }
+    
+    .desktop-menu-category-list {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    
+    .desktop-menu-category-list .menu-category {
+      position: relative;
+    }
+    
+    .menu-title {
+      position: relative;
+      color: var(--sonic-silver);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 15px 0;
+      transition: color 0.3s ease;
+    }
+    
+    .menu-title:hover {
+      color: var(--salmon-pink);
+    }
+    
+    /* Customize search in header */
+    .header-search-container {
+      position: relative;
+    }
+    
+    .search-field {
+      padding-right: 40px;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .search-field:focus {
+      border-color: var(--salmon-pink);
+      outline: none;
+    }
+    
+    .search-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--sonic-silver);
+      transition: color 0.3s ease;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+    }
+    
+    .search-btn:hover {
+      color: var(--salmon-pink);
+    }
+
+    /* Mobile-specific navigation */
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .mobile-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #777;
+      text-decoration: none;
+      font-size: 0.7rem;
+    }
+
+    .mobile-nav a.active {
+      color: var(--salmon-pink);
+    }
+
+    .mobile-nav ion-icon {
+      font-size: 1.3rem;
+      margin-bottom: 3px;
+    }
+
+    .mobile-nav-badge {
+      position: absolute;
+      top: 0;
+      right: 28%;
+      background: var(--salmon-pink);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media screen and (min-width: 768px) {
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    /* Add space at the bottom on mobile for the navigation bar */
+    @media screen and (max-width: 767px) {
+      body {
+        padding-bottom: 65px;
+      }
+    }
+  </style>
+  
+  <!-- Include components.js for loadHeader, loadFooter -->
+  <script src="./assets/js/components.js"></script>
+  
+  <!-- Global wrapper functions -->
+  <script>
+    // Global wrapper functions
+    function filterByCategory(categoryId, categoryName) {
+      // Redirect to index page with category filter
+      window.location.href = `index.html?category=${categoryId}`;
+    }
+    
+    function hideCategories() {
+      if (typeof hideCategoriesInternal === 'function') {
+        hideCategoriesInternal();
+      } else {
+        console.log('hideCategoriesInternal not available on this page');
+      }
+    }
+    
+    function displayProducts(products) {
+      if (typeof displayProductsInternal === 'function') {
+        displayProductsInternal(products);
+      } else {
+        console.log('displayProductsInternal not available on this page');
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="overlay" data-overlay></div>
+
+  <!-- Header will be loaded here -->
+  <div id="header-container"></div>
+
+  <main>
+    <div class="product-details-container">
+      <button class="go-back-btn" onclick="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        Back to Products
+      </button>
+      
+      <div class="product-details">
+        <div class="product-image-container">
+          <img id="product-image" src="" alt="Product Image" class="product-image" 
+               onerror="this.src='./assets/images/products/default.jpg'">
+        </div>
+        
+        <div class="product-info">
+          <h1 id="product-title" class="product-title"></h1>
+          <p id="product-category" class="product-category"></p>
+          <p id="product-price" class="product-price"></p>
+          <div id="product-description" class="product-description"></div>
+          
+          <div class="quantity-selector">
+            <button class="quantity-btn" onclick="decrementQuantity()">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="99">
+            <button class="quantity-btn" onclick="incrementQuantity()">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+          </div>
+          
+          <div class="product-action-buttons">
+            <button class="add-to-cart-btn" onclick="addToCart()">
+              <ion-icon name="bag-add-outline"></ion-icon>
+              Add to Cart
+            </button>
+            <button class="add-to-wishlist-btn" onclick="addToWishlist()">
+              <ion-icon name="heart-outline"></ion-icon>
+              Add to Wishlist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer will be loaded here -->
+  <div id="footer-container"></div>
+  
+  <!-- Mobile Bottom Navigation -->
+  <div class="mobile-nav">
+    <a href="index.html">
+      <ion-icon name="home-outline"></ion-icon>
+      <span>Home</span>
+    </a>
+    <a href="index.html#products">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span>Shop</span>
+    </a>
+    <a href="wishlist.html">
+      <ion-icon name="heart-outline"></ion-icon>
+      <span>Wishlist</span>
+      <span class="mobile-nav-badge wishlist-count">0</span>
+    </a>
+    <a href="cart.html">
+      <ion-icon name="bag-outline"></ion-icon>
+      <span>Cart</span>
+      <span class="mobile-nav-badge cart-count">0</span>
+    </a>
+  </div>
+
+  <!-- Load components first -->
+  <script src="./components.js"></script>
+  
+  <!-- ionicon link -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded');
+      
+      // Reset wishlist if showing incorrectly
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      if (wishlist.length === 0) {
+        document.querySelectorAll('.wishlist-count').forEach(element => {
+          element.style.display = 'none';
+        });
+      }
+      
+      // Load dependencies first
+      loadDependencies().then(() => {
+        // Then load product details after dependencies are loaded
+        displayProductDetails();
+      }).catch(error => {
+        console.error('Error in initialization:', error);
+        // Show an error message on the page
+        document.getElementById('product-details').innerHTML = `
+          <div class="error-message">
+            <h2>Error Loading Product</h2>
+            <p>There was a problem loading the product details. Please try again later.</p>
+            <button class="go-back-btn" onclick="goBack()">
+              <ion-icon name="arrow-back-outline"></ion-icon>
+              Go Back
+            </button>
+          </div>
+        `;
+      });
+      
+      // Set up event listeners for quantity buttons
+      setupQuantityButtons();
+    });
+    
+    // Function to set up quantity buttons
+    function setupQuantityButtons() {
+      const decreaseBtn = document.getElementById('decrease-quantity');
+      const increaseBtn = document.getElementById('increase-quantity');
+      const quantityInput = document.getElementById('quantity');
+      
+      if (decreaseBtn && increaseBtn && quantityInput) {
+        decreaseBtn.addEventListener('click', () => {
+          let currentQuantity = parseInt(quantityInput.value);
+          if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+          }
+        });
+        
+        increaseBtn.addEventListener('click', () => {
+          let currentQuantity = parseInt(quantityInput.value);
+          quantityInput.value = currentQuantity + 1;
+        });
+        
+        // Ensure input is always valid
+        quantityInput.addEventListener('change', () => {
+          let value = parseInt(quantityInput.value);
+          if (isNaN(value) || value < 1) {
+            quantityInput.value = 1;
+          }
+        });
+      }
+    }
+    
+    // Load the components.js script
+    function loadScript(url) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+    
+    // Ensure components are loaded before proceeding
+    async function loadDependencies() {
+      try {
+        await loadScript('./components.js');
+        console.log('Components loaded:', typeof loadHeader === 'function', typeof loadFooter === 'function');
+        
+        // Load the header and footer
+        try {
+          // Create direct string versions of header and footer if functions are missing
+          if (typeof loadHeader !== 'function') {
+            console.error('loadHeader function not found - using default header');
+            document.getElementById('header-container').innerHTML = `
+            <header>
+              <div class="header-main">
+                <div class="container">
+                  <a href="index.html" class="header-logo">
+                    <img src="./assets/images/logo/BIO.svg" alt="BioGold's logo" width="200" height="100">
+                  </a>
+                  <div class="header-user-actions">
+                    <a href="wishlist.html" class="action-btn">
+                      <ion-icon name="heart-outline"></ion-icon>
+                      <span class="count wishlist-count">0</span>
+                    </a>
+                    <a href="cart.html" class="action-btn">
+                      <ion-icon name="bag-handle-outline"></ion-icon>
+                      <span class="count cart-count">0</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </header>
+            `;
+          } else {
+            // Load the header and then initialize navigation
+            document.getElementById('header-container').innerHTML = loadHeader();
+            // Use a small delay to ensure the header DOM is fully rendered
+            setTimeout(() => {
+              initializeNavigationListeners();
+            }, 100);
+          }
+          
+          if (typeof loadFooter !== 'function') {
+            console.error('loadFooter function not found - using default footer');
+            document.getElementById('footer-container').innerHTML = `
+            <footer>
+              <div class="container">
+                <div class="footer-nav">
+                  <div class="footer-section">
+                    <h3>About BioGold</h3>
+                    <p>Premium eCommerce platform offering high-quality products at competitive prices.</p>
+                  </div>
+                  <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: contact@biogold.com</p>
+                    <p>Phone: +216 71 123 456</p>
+                  </div>
+                </div>
+                <div class="footer-bottom">
+                  <p>&copy; 2023 BioGold. All Rights Reserved.</p>
+                </div>
+              </div>
+            </footer>
+            `;
+          } else {
+            document.getElementById('footer-container').innerHTML = loadFooter();
+          }
+          
+          console.log('Header and footer loaded successfully');
+          
+          // Update counts after header is loaded
+          setTimeout(() => {
+            updateCartAndWishlistCounts();
+          }, 200);
+        } catch (error) {
+          console.error('Error loading header/footer:', error);
+        }
+      } catch (error) {
+        console.error('Error loading dependencies:', error);
+        
+        // Fallback for critical components
+        document.getElementById('header-container').innerHTML = `
+        <header>
+          <div class="header-main">
+            <div class="container">
+              <a href="index.html" class="header-logo">
+                <img src="./assets/images/logo/BIO.svg" alt="BioGold's logo" width="200" height="100">
+              </a>
+              <div class="header-user-actions">
+                <a href="wishlist.html" class="action-btn">
+                  <ion-icon name="heart-outline"></ion-icon>
+                </a>
+                <a href="cart.html" class="action-btn">
+                  <ion-icon name="bag-handle-outline"></ion-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+        `;
+      }
+    }
+    
+    // Function to update cart and wishlist counts
+    function updateCartAndWishlistCounts() {
+      // Update cart count
+      try {
+        if (typeof updateCartCount === 'function') {
+          updateCartCount();
+        } else {
+          // Basic implementation if the function doesn't exist
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+          
+          // Update all cart count elements
+          const cartCountElements = document.querySelectorAll('.cart-count');
+          cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+            element.style.display = totalItems > 0 ? 'flex' : 'none';
+          });
+        }
+      } catch (error) {
+        console.error('Error updating cart count:', error);
+      }
+      
+      // Update wishlist count
+      try {
+        if (typeof updateWishlistCount === 'function') {
+          updateWishlistCount();
+        } else {
+          updateWishlistCountBasic();
+        }
+      } catch (error) {
+        console.error('Error updating wishlist count:', error);
+      }
+    }
+    
+    // API URL for products
+    const API_URL = 'http://localhost:5000/api/products';
+    let currentProduct = null;
+    
+    // Get product ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    console.log('Product ID from URL:', productId);
+    
+    // Fetch product details by ID
+    async function fetchProductDetails() {
+      try {
+        if (!productId) {
+          throw new Error('No product ID provided');
+        }
+        
+        console.log(`Fetching product with ID: ${productId}`);
+        const response = await fetch(`${API_URL}/${productId}`);
+        
+        if (!response.ok) {
+          console.error(`API response error: ${response.status} ${response.statusText}`);
+          throw new Error('Failed to fetch product');
+        }
+        
+        const data = await response.json();
+        console.log('Product data received:', data);
+        
+        if (!data) {
+          throw new Error('Product not found');
+        }
+        
+        // Ensure the product has a valid ID property
+        if (!data._id && !data.id) {
+          // If the API doesn't provide an ID, add the one from the URL
+          data._id = productId;
+          console.log('Added _id from URL:', productId);
+        }
+        
+        // Log ID properties for debugging
+        console.log('Product ID properties:', {
+          _id: data._id,
+          id: data.id,
+          urlId: productId
+        });
+        
+        return data;
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        showToast(error.message || 'Error loading product details', 'error');
+        
+        // Show a more user-friendly message in the UI
+        const productContainer = document.querySelector('.product-details');
+        if (productContainer) {
+          productContainer.innerHTML = `
+            <div class="error-message">
+              <h2>Failed to fetch product</h2>
+              <p>${error.message}</p>
+              <a href="index.html" class="btn go-back-btn">Return to Homepage</a>
+            </div>
+          `;
+        }
+        
+        return null;
+      }
+    }
+    
+    // Display product details on the page
+    async function displayProductDetails() {
+      try {
+        currentProduct = await fetchProductDetails();
+        
+        if (!currentProduct) {
+          return; // Error already handled
+        }
+        
+        // Update page title
+        document.title = `${currentProduct.title || currentProduct.name || 'Product'} - BioGold`;
+        
+        // Handle image path
+        let imagePath = currentProduct.image || currentProduct.imageUrl || './assets/images/products/default.jpg';
+        if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('./')) {
+          imagePath = `http://localhost:5000/${imagePath}`;
+        }
+        
+        // Get category name from either direct property or nested object
+        const categoryName = typeof currentProduct.category === 'string' 
+          ? currentProduct.category 
+          : (currentProduct.Category?.name || 'Uncategorized');
+        
+        console.log('Product category data:', { 
+          direct: currentProduct.category,
+          nested: currentProduct.Category,
+          resolved: categoryName
+        });
+        
+        // Update DOM elements
+        document.getElementById('product-image').src = imagePath;
+        document.getElementById('product-image').alt = currentProduct.title || currentProduct.name || 'Product Image';
+        document.getElementById('product-title').textContent = currentProduct.title || currentProduct.name || 'Untitled Product';
+        document.getElementById('product-category').textContent = categoryName;
+        document.getElementById('product-price').textContent = `${(parseFloat(currentProduct.price) || 0).toFixed(2)} TND`;
+        document.getElementById('product-description').textContent = currentProduct.description || 'No description available';
+        
+      } catch (error) {
+        console.error('Error displaying product:', error);
+        showToast('Error loading product details');
+      }
+    }
+    
+    // Quantity functions
+    function incrementQuantity() {
+      const input = document.getElementById('quantity');
+      input.value = Math.min(parseInt(input.value) + 1, 99);
+    }
+    
+    function decrementQuantity() {
+      const input = document.getElementById('quantity');
+      input.value = Math.max(parseInt(input.value) - 1, 1);
+    }
+    
+    // Go back function
+    function goBack() {
+      history.back();
+    }
+
+    // Add to cart function
+    function addToCart() {
+      if (!currentProduct) return;
+      
+      const quantity = parseInt(document.getElementById('quantity').value);
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      const existingItem = cart.find(item => item.productId === currentProduct._id);
+      
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        // Handle image path
+        let imagePath = currentProduct.image || currentProduct.imageUrl || './assets/images/products/default.jpg';
+        console.log('Original image path:', imagePath); // Debug log
+        
+        if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('./')) {
+          imagePath = `http://localhost:5000/${imagePath}`;
+        }
+        console.log('Formatted image path:', imagePath); // Debug log
+        
+        // Ensure product name is properly set
+        const productName = currentProduct.title || currentProduct.name || 'Unknown Product';
+        console.log('Product name:', productName); // Debug log
+        
+        cart.push({
+          productId: currentProduct._id,
+          name: productName,
+          price: parseFloat(currentProduct.price) || 0,
+          image: imagePath,
+          quantity: quantity
+        });
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      console.log("Added to cart:", cart); // Debug log
+      
+      // Update cart count
+      if (typeof updateCartCount === 'function') {
+        updateCartCount();
+      }
+      
+      showToast('Product added to cart!');
+    }
+    
+    // Add to wishlist function
+    function addToWishlist() {
+      if (!currentProduct) {
+        console.error('Cannot add to wishlist: currentProduct is null or undefined');
+        showToast('Error: Product details not loaded properly', 'error');
+        return;
+      }
+      
+      console.log('Adding to wishlist, product details:', currentProduct);
+      
+      // Get the existing wishlist
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      
+      // Get product ID - try multiple possible properties
+      const productId = currentProduct._id || currentProduct.id || productId;
+      
+      if (!productId) {
+        console.error('Cannot add to wishlist: No valid product ID found');
+        showToast('Error: Product ID not found', 'error');
+        return;
+      }
+      
+      // Check if product is already in wishlist (checking multiple ID formats)
+      const existingItem = wishlist.find(item => 
+        item.productId === productId || 
+        (currentProduct._id && item.productId === currentProduct._id) || 
+        (currentProduct.id && item.productId === currentProduct.id)
+      );
+      
+      if (existingItem) {
+        showToast('This product is already in your wishlist');
+        return;
+      }
+      
+      // Format the image path correctly
+      let imagePath = currentProduct.image || currentProduct.imageUrl || './assets/images/products/default.jpg';
+      if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('./')) {
+        imagePath = `http://localhost:5000/${imagePath}`;
+      }
+      
+      // Get product name
+      const productName = currentProduct.title || currentProduct.name || 'Unknown Product';
+      
+      // Prepare wishlist item with consistent data format
+      const wishlistItem = {
+        productId: productId,
+        name: productName,
+        price: parseFloat(currentProduct.price) || 0,
+        image: imagePath,
+        description: currentProduct.description || '',
+        category: typeof currentProduct.category === 'string' ? currentProduct.category : (currentProduct.Category?.name || 'Uncategorized')
+      };
+      
+      console.log('Adding to wishlist, item:', wishlistItem);
+      
+      // Add to wishlist
+      wishlist.push(wishlistItem);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      
+      // Update wishlist count if the function exists
+      if (typeof updateWishlistCount === 'function') {
+        updateWishlistCount();
+      } else {
+        // Simple implementation if the function doesn't exist
+        updateWishlistCountBasic();
+      }
+      
+      showToast('Product added to wishlist!');
+    }
+    
+    // Basic implementation of updateWishlistCount if the global one isn't available
+    function updateWishlistCountBasic() {
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const count = wishlist.length;
+      
+      // Update all wishlist count elements in the document
+      const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+      wishlistCountElements.forEach(element => {
+        element.textContent = count;
+        // Make badge visible only if there are items
+        element.style.display = count > 0 ? 'flex' : 'none';
+      });
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+      // Remove any existing toasts
+      const existingToasts = document.querySelectorAll('.toast');
+      existingToasts.forEach(toast => toast.remove());
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      // Add appropriate icon based on type
+      let icon;
+      if (type === 'success') {
+        icon = 'checkmark-circle-outline';
+      } else if (type === 'error') {
+        icon = 'alert-circle-outline';
+      } else {
+        icon = 'information-circle-outline';
+      }
+      
+      toast.innerHTML = `
+        <ion-icon name="${icon}"></ion-icon>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(toast);
+      
+      // No need for manual removal, animations will handle it
+      setTimeout(() => {
+        toast.remove();
+      }, 2300); // Slightly longer than the animation duration
+    }
+  </script>
+</body>
+</html> 
