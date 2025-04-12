@@ -1,10 +1,22 @@
 {
+  "name": "biogold-ecommerce",
+  "version": "1.0.0",
+  "description": "BioGold E-commerce Website",
+  "scripts": {
+    "build": "echo 'No build required - static site'",
+    "start": "npx serve -s .",
+    "dev": "npx serve -s ."
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.0",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
