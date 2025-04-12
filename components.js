@@ -288,8 +288,20 @@ function translatePage() {
   }
 }
 
+// Function to get the base URL for assets
+function getAssetsBaseUrl() {
+  // If we're deployed on Netlify, use absolute URLs
+  const siteBaseUrl = localStorage.getItem('siteBaseUrl') || '';
+  const isNetlify = window.location.hostname.includes('netlify.app');
+  
+  // Return base URL if on Netlify, otherwise relative path
+  return isNetlify ? siteBaseUrl : '.';
+}
+
 // Function to load the header
 function loadHeader() {
+  const baseUrl = getAssetsBaseUrl();
+  
   return `
     <header>
       <div class="header-top">
@@ -331,7 +343,7 @@ function loadHeader() {
       <div class="header-main">
         <div class="container">
           <a href="index.html" class="header-logo">
-            <img src="./assets/images/logo/BIO.svg" alt="BioGold's logo" width="200" height="100">
+            <img src="${baseUrl}/assets/images/logo/BIO.svg" alt="BioGold's logo" width="200" height="100">
           </a>
 
           <div class="header-search-container">
@@ -508,6 +520,8 @@ function loadHeader() {
 
 // Function to load the footer
 function loadFooter() {
+  const baseUrl = getAssetsBaseUrl();
+  
   return `
     <footer class="modern-footer">
       <div class="footer-top">
@@ -606,7 +620,7 @@ function loadFooter() {
             &copy; 2024 <a href="#" class="copyright-link">BioGold</a>. ${t('allRightsReserved')}
           </p>
           <div class="payment-methods">
-            <img src="./assets/images/payment.png" alt="Payment methods" class="payment-img">
+            <img src="${baseUrl}/assets/images/payment.png" alt="Payment methods" class="payment-img">
         </div>
       </div>
       </div>
